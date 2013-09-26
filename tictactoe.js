@@ -21,7 +21,9 @@ TTT.prototype.calculateAIMove = function() {
   }
 
   return (
-    this.winningMove('O') || this.winningMove('X') || this.triangulation('X')
+    this.winningMove('O')
+    || this.winningMove('X')
+    || this.triangulation('X')
     || this.winnableLine('O')
     || this.emptyTiles()[Math.floor(Math.random() * this.emptyTiles.length)]
   );
@@ -51,8 +53,7 @@ TTT.prototype.cornersEmpty = function () {
 TTT.prototype.edgeCase = function(symbol) {
   var game = this;
   var count = 0;
-  var indices = _.range(0, 3);
-  _.each(indices, function (i) {
+  _.each([1, 2], function (i) {
     if (game.board[i][i] === symbol) {
       count += 1;
     }
