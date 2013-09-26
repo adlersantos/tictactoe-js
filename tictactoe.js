@@ -3,6 +3,12 @@ function TTT() {
   this.board = this.makeBoard();
 }
 
+TTT.prototype.boardFull = function() {
+  return _.every(this.board, function (row) {
+    return _.every(row, function(el) { return el !== null; });
+  });
+};
+
 TTT.prototype.calculateAIMove = function() {
   var game = this;
 
@@ -10,11 +16,14 @@ TTT.prototype.calculateAIMove = function() {
     return [0, 0];
   } else if (this.board[1][1] === null) {
     return [1, 1];
-  };
+  } else if (this.edgeCase('X')) {
+    return [2, 0];
+  }
 
   return (
-    this.winningMove('O') || this.winningMove('X')
-    || this.triangulation('X') || this.winnableLine('O')
+    this.winningMove('O') || this.winningMove('X') || this.triangulation('X')
+    || this.winnableLine('O')
+    || this.emptyTiles()[Math.floor(Math.random() * this.emptyTiles.length)]
   );
 };
 
@@ -37,6 +46,20 @@ TTT.prototype.cornersEmpty = function () {
   return _.every(corners, function (corner) {
     return _.isNull(board[corner[0]][corner[1]]);
   });
+};
+
+TTT.prototype.edgeCase = function(symbol) {
+  var game = this;
+  var count = 0;
+  var indices = _.range(0, 3);
+  _.each(indices, function (i) {
+    if (game.board[i][i] === symbol) {
+      count += 1;
+    }
+  });
+  if (count === 2 && game.emptyTiles().length === 6) {
+    return true;
+  }
 };
 
 TTT.prototype.diagonals = function() {
@@ -74,11 +97,19 @@ TTT.prototype.diagonalWinner = function () {
   return winner;
 };
 
-TTT.prototype.boardFull = function() {
-  return _.every(this.board, function (row) {
-    return _.every(row, function(el) { return el !== null; });
+TTT.prototype.emptyTiles = function () {
+  var game = this;
+  var emptyPositions = [];
+  var indices = _.range(0, 3);
+  _.each(indices, function (i) {
+    _.each(indices, function (j) {
+      if (game.board[i][j] === null) {
+        emptyPositions.push([i, j]);
+      }
+    });
   });
-};
+  return emptyPositions;
+}
 
 TTT.prototype.hasPair = function (arr, symbol) {
   var nullCount = _.filter(arr, _.isNull).length;

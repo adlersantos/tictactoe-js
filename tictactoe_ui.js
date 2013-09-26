@@ -35,7 +35,7 @@ $(document).ready(function() {
     render(game);
 
     if (game.winner()) {
-      alert("Player " + game.winner() + " wins!");
+      alert("Computer wins!");
       game = new TTT();
       render(game);
     }
